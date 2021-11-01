@@ -14,8 +14,8 @@ class Bt01Page extends StatefulWidget {
 }
 
 class _Bt01PageState extends State<Bt01Page> {
-  bool isDownloaded = false;
   bool isDownloading = false;
+  bool isDeleted = false;
   double progress = 0;
   String path = '';
 
@@ -31,21 +31,39 @@ class _Bt01PageState extends State<Bt01Page> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              height: 250,
-              width: 250,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(
-                  width: 2,
-                  color: Colors.black,
+                height: 250,
+                width: 250,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(
+                    width: 2,
+                    color: Colors.red,
+                  ),
                 ),
-              ),
-              child: isDownloaded
-                  ? Image.file(
-                      File(path),
-                    )
-                  : const Center(child: Text('Empty')),
-            ),
+                child: FutureBuilder(
+                  future: File(path).exists(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
+                    if (snapshot.hasData) {
+                      if (snapshot.data == true) {
+                        return Image.file(
+                          File(path),
+                        );
+                      } else {
+                        return const Center(child: Text('Null'));
+                      }
+                    }
+                    return Container();
+                  },
+                )),
             const SizedBox(height: 20),
             SizedBox(
               height: 40,
@@ -74,8 +92,8 @@ class _Bt01PageState extends State<Bt01Page> {
               child: const Text('Download Image'),
             ),
             ElevatedButton(
-              onPressed: _reset,
-              child: const Text('Reset'),
+              onPressed: _delete,
+              child: const Text('Delete'),
             ),
           ],
         ),
@@ -83,21 +101,21 @@ class _Bt01PageState extends State<Bt01Page> {
     );
   }
 
-  _reset() {
-    setState(() {
-      isDownloaded = false;
-      isDownloading = false;
-      progress = 0;
-    });
+  _delete() async {
+    if (await File(path).exists()) {
+      setState(() {
+        File(path).delete();
+        progress = 0;
+      });
+    }
   }
 
   _downloadVideo() async {
     setState(() {
-      isDownloaded = false;
       isDownloading = true;
       progress = 0;
     });
-    var appDocDir = await getTemporaryDirectory();
+    var appDocDir = await getApplicationDocumentsDirectory();
     path = appDocDir.path + "/temp.jpg";
     await Dio().download(
       url,
@@ -115,8 +133,6 @@ class _Bt01PageState extends State<Bt01Page> {
 
     setState(() {
       if (path != '') {
-        isDownloaded = true;
-
         isDownloading = false;
       }
     });
