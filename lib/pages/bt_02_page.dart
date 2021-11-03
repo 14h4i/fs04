@@ -37,7 +37,7 @@ class _Bt02PageState extends State<Bt02Page> {
   }
 
   _getData() async {
-    String url = 'https://api.dofhunt.200lab.io/v1/categoriess';
+    String url = 'https://api.dofhunt.200lab.io/v1/categories';
     setState(() {
       isLoading = true;
     });

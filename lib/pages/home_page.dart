@@ -10,21 +10,24 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Home Page'),
       ),
-      body: Column(
-        children: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pushNamed(context, AppRoutes.bt01Page);
-            },
-            child: const Text('BT 01'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pushNamed(context, AppRoutes.bt02Page);
-            },
-            child: const Text('BT 02'),
-          ),
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, AppRoutes.bt01Page);
+              },
+              child: const Text('BT 01'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, AppRoutes.bt02Page);
+              },
+              child: const Text('BT 02'),
+            ),
+          ],
+        ),
       ),
     );
   }
